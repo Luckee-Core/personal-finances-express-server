@@ -1,0 +1,1 @@
+-- Superseded by 013_category_assign_no_slug.sql (same generic prompt shape).

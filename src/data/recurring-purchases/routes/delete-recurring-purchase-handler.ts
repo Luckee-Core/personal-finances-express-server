@@ -1,0 +1,26 @@
+import type { Request, Response } from 'express';
+import { deleteRecurringPurchase } from '../delete';
+import { parseRouteId, requireSupabase, sendClientError, sendHandlerError, sendSuccess } from '../../../utils/http';
+
+/**
+ * Handles DELETE /api/data/recurring-purchases/:id.
+ */
+export const deleteRecurringPurchaseHandler = async (req: Request, res: Response): Promise<void> => {
+  console.log('📥 DELETE /api/data/recurring-purchases/:id');
+  const supabase = requireSupabase(req, res);
+  if (!supabase) return;
+
+  const id = parseRouteId(req.params.id);
+  if (!id) {
+    sendClientError(res, 'Invalid id');
+    return;
+  }
+
+  try {
+    await deleteRecurringPurchase(supabase, id);
+    console.log('📤 DELETE /api/data/recurring-purchases/:id');
+    sendSuccess(res, null);
+  } catch (error) {
+    sendHandlerError(res, error, 'DELETE /api/data/recurring-purchases/:id');
+  }
+};

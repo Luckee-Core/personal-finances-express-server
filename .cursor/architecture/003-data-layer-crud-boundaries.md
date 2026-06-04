@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-02-27
-- **Applies to:** `roads-platform-express-server` (Express)
+- **Applies to:** `personal-finances-express-server` (Express)
 
 ## Context
 
@@ -38,7 +38,7 @@ To keep domain code maintainable and testable, database access must be isolated 
    - `config.ts`
    - `types.ts` (use `type`, not `interface`)
 3. Routers are thin: route wiring only, no business logic or try/catch blocks.
-4. Handlers delegate business logic to `processX()` functions.
+4. Handlers delegate non-trivial business logic to `processX()` functions. **Thin CRUD** handlers in `src/data/{entity}/routes/` may call data functions directly (ADR 011).
 
 ### 5) Handler contract
 

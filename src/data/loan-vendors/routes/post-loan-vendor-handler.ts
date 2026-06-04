@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express';
 import { createLoanVendor } from '../create';
 import type { CreateLoanVendorInput } from '../types';
-import { requireSupabase, sendHandlerError, sendSuccess } from '../../../utils/http';
+import {
+  requireSupabase,
+  sendClientError,
+  sendHandlerError,
+  sendSuccess,
+} from '../../../utils/http';
 
 /**
  * Handles POST /api/data/loan-vendors.
@@ -11,8 +16,14 @@ export const postLoanVendorHandler = async (req: Request, res: Response): Promis
   const supabase = requireSupabase(req, res);
   if (!supabase) return;
 
+  const body = req.body as CreateLoanVendorInput;
+  if (!body?.name?.trim()) {
+    sendClientError(res, 'name is required');
+    return;
+  }
+
   try {
-    const created = await createLoanVendor(supabase, req.body as CreateLoanVendorInput);
+    const created = await createLoanVendor(supabase, body);
     console.log('📤 POST /api/data/loan-vendors');
     sendSuccess(res, created);
   } catch (error) {

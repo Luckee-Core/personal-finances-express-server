@@ -1,6 +1,8 @@
 # File & Domain Organization
 
-This document defines how to organize files in the Express server so each domain is isolated, handlers stay thin, and data access remains in `src/data/`.
+This document defines how to organize files in **personal-finances-express-server** so handlers stay thin and data access remains in `src/data/`.
+
+> **Primary layout for this repo:** Catalog CRUD lives in `src/data/{entity}/` with routers mounted by [011 – Personal Finances `/api/data` REST](./011-personal-finances-api-data.md). Use `src/domains/` and `src/services/` for AI orchestration with `processX()` functions.
 
 ## Canonical Folder Structure
 

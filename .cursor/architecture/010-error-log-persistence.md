@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Deferred (not implemented in personal-finances-express-server)
 
 ## Context
 

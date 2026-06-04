@@ -7,7 +7,11 @@ Accepted
 Standardize Express domain modules so routing is predictable, handlers stay thin, and business logic remains testable.
 
 ## Scope
-Applies to all API domains under `src/domains/{domain}/`.
+Applies to routers under `src/data/{entity}/`, `src/domains/{domain}/`, and `src/services/{feature}/`.
+
+**Thin CRUD** (`src/data/{entity}/routes/`): handlers may call data-layer functions directly without a `processX` wrapper when logic is a single CRUD operation (see ADR 011).
+
+**Orchestration** (`src/domains/`, `src/services/`): handlers must delegate to `processX()`.
 
 ## Core Rules
 1. Use router factory functions only: `createXRouter(): Router`.

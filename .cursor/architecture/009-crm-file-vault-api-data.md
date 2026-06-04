@@ -1,5 +1,7 @@
 # 009 – CRM file vault and `/api/data` action API
 
+> **Status: Superseded** for personal-finances-express-server. This ADR describes a CRM JSON vault template. Use [011 – Personal Finances `/api/data` REST](./011-personal-finances-api-data.md) instead.
+
 ## Scope
 
 - **Persistence:** JSON files under `CRM_DATA_DIR` (default: `<cwd>/.data/crm`), including `companies.json`, `employees.json`, `jobs.json`, `job-applications.json`. **Graphics** use Supabase `image_graphics` only (`docs/supabase-image-graphics-schema.sql`).

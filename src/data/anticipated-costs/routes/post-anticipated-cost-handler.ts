@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express';
 import { createAnticipatedCost } from '../create';
 import type { CreateAnticipatedCostInput } from '../types';
-import { requireSupabase, sendHandlerError, sendSuccess } from '../../../utils/http';
+import {
+  requireSupabase,
+  sendClientError,
+  sendHandlerError,
+  sendSuccess,
+} from '../../../utils/http';
 
 /**
  * Handles POST /api/data/anticipated-costs.
@@ -14,11 +19,14 @@ export const postAnticipatedCostHandler = async (
   const supabase = requireSupabase(req, res);
   if (!supabase) return;
 
+  const body = req.body as CreateAnticipatedCostInput;
+  if (!body?.name?.trim()) {
+    sendClientError(res, 'name is required');
+    return;
+  }
+
   try {
-    const created = await createAnticipatedCost(
-      supabase,
-      req.body as CreateAnticipatedCostInput,
-    );
+    const created = await createAnticipatedCost(supabase, body);
     console.log('📤 POST /api/data/anticipated-costs');
     sendSuccess(res, created);
   } catch (error) {

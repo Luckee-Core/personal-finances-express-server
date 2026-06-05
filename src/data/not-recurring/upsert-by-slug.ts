@@ -1,6 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { CreateNotRecurringInput, NotRecurring } from './types';
 
+/**
+ * Inserts or updates a not-recurring row keyed by slug.
+ */
 export const upsertNotRecurringBySlug = async (
   supabase: SupabaseClient,
   input: CreateNotRecurringInput,

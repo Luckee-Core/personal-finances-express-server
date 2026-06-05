@@ -1,6 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { StatementImport } from './types';
 
+/**
+ * Lists all statement imports.
+ */
 export const getAllStatementImports = async (
   supabase: SupabaseClient,
 ): Promise<StatementImport[]> => {

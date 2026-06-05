@@ -1,11 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Transaction, UpdateTransactionInput } from './types';
 
+/**
+ * Updates a transaction row.
+ */
 export const updateTransaction = async (
   supabase: SupabaseClient,
   id: string,
   input: UpdateTransactionInput,
 ): Promise<Transaction> => {
+  console.log('💾 updateTransaction', { id });
   const patch: Record<string, string | number | null> = {
     updated_at: new Date().toISOString(),
   };

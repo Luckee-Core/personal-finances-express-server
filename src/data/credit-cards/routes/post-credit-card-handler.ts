@@ -3,6 +3,9 @@ import { createCreditCard } from '../create';
 import type { CreateCreditCardInput } from '../types';
 import { requireSupabase, sendHandlerError, sendSuccess } from '../../../utils/http';
 
+/**
+ * Handles POST /api/data/credit-cards.
+ */
 export const postCreditCardHandler = async (req: Request, res: Response): Promise<void> => {
   console.log('📥 POST /api/data/credit-cards');
   const supabase = requireSupabase(req, res);

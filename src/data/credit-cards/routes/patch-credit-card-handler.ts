@@ -3,6 +3,9 @@ import { updateCreditCard } from '../update';
 import type { UpdateCreditCardInput } from '../types';
 import { parseRouteId, requireSupabase, sendClientError, sendHandlerError, sendSuccess } from '../../../utils/http';
 
+/**
+ * Handles PATCH /api/data/credit-cards/:id.
+ */
 export const patchCreditCardHandler = async (req: Request, res: Response): Promise<void> => {
   console.log('📥 PATCH /api/data/credit-cards/:id');
   const supabase = requireSupabase(req, res);

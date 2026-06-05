@@ -1,152 +1,81 @@
-# Express Server Template
+# Personal Finances Express Server
 
-A production-ready Express API server template with TypeScript, perfect for quickly spinning up new backend services.
+Express API for [personal-finances](https://github.com/Luckee-Core/personal-finances) — Supabase-backed CRUD and AI workers for personal finance tracking.
 
-## Features
+**OSS quickstart (web + Express):** [`docs/oss-quickstart.md`](docs/oss-quickstart.md).
 
-- ✅ **TypeScript** - Full type safety and modern JS features
-- ✅ **Express.js** - Fast, minimalist web framework
-- ✅ **CORS** - Configured for cross-origin requests
-- ✅ **Hot Reload** - Nodemon for development
-- ✅ **Health Checks** - Built-in health endpoints
-- ✅ **Error Handling** - Centralized error middleware
-- ✅ **Clean Structure** - Organized, scalable file structure
+OSS governance: [mentorai-server `data/open-source/`](https://github.com/trouthouse-tech/mentorai-server/tree/main/data/open-source).
 
-## Quick Start
+## Quick start
 
-### 1. Create a New Project from This Template
-
-**Using GitHub CLI:**
 ```bash
-gh repo create my-new-api --template trouthouse-tech/express-server-template --private --clone
-cd my-new-api
-```
+cp .env.example .env
+# Fill SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+# Optional: ANTHROPIC_API_KEY for AI features
 
-**Using degit:**
-```bash
-npx degit trouthouse-tech/express-server-template my-new-api
-cd my-new-api
-git init
-```
-
-### 2. Install Dependencies
-```bash
 npm install
-```
-
-### 3. Run Development Server
-```bash
 npm run dev
 ```
 
-Server will start on `http://localhost:3000`
+Default port: **3011** (matches web `NEXT_PUBLIC_SERVER_URL` dev default).
 
-### 4. Test It
 ```bash
-curl http://localhost:3000
-# {"status":"ok","message":"TroutHouseTech Express Server is running",...}
+curl http://localhost:3011/api/health
 ```
 
-## Available Endpoints
-
-- `GET /` - Health check
-- `GET /api/health` - Health check with detailed info
-
-## Project Structure
-
-```
-express-server-template/
-├── index.ts                 # Main entry point
-├── src/
-│   └── services/
-│       ├── middleware/      # Express middleware
-│       │   ├── setup-early-middleware.ts
-│       │   ├── setup-error-handling.ts
-│       │   └── index.ts
-│       ├── health/          # Health check routes
-│       │   ├── create-health-router.ts
-│       │   └── index.ts
-│       └── server/          # Server startup logic
-│           ├── start-server.ts
-│           └── index.ts
-├── package.json
-├── tsconfig.json
-└── .gitignore
-```
-
-## Environment Variables
-
-Create a `.env` file in the root directory:
+Point the web app at this server:
 
 ```env
-PORT=3000
-NODE_ENV=development
+NEXT_PUBLIC_SERVER_URL=http://localhost:3011
 ```
 
-## Scripts
+## Mounted routes
 
-- `npm run dev` - Start development server with hot reload
-- `npm start` - Start production server
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm run build:watch` - Watch mode compilation
+| Prefix | Purpose |
+|--------|---------|
+| `GET /`, `GET /api/health` | Health |
+| `/api/data/bank-accounts` | Bank accounts |
+| `/api/data/credit-cards` | Credit cards |
+| `/api/data/categories` | Categories |
+| `/api/data/transactions` | Transactions |
+| `/api/data/recurring-purchases` | Recurring purchases (+ `POST /:id/mark-not-recurring`) |
+| `/api/data/anticipated-costs` | Anticipated costs |
+| `/api/data/loan-vendors` | Loan vendors |
+| `/api/data/loans` | Loans |
+| `/api/data/not-recurring` | Not-recurring slug markers |
+| `/api/data/statement-imports` | CSV statement imports |
+| `/api/data/ai-prompts` | AI prompts (+ `POST /:id/activate`) |
+| `/api/data/llm-models` | LLM model catalog |
+| `/api/data/*-ai-exchanges` | AI audit exchanges (slug, category, recurring) |
+| `/api/data/*-ai-requests` | AI audit requests |
+| `/api/data/*-ai-responses` | AI audit responses |
+| `/api/ai/*` | AI workers (slug assign, category assign, recurring detect) |
 
-## Adding New Routes
+Full aggregator: `src/data/personal-finances-data-service.ts`.
 
-1. Create a new router in `src/services/`:
+## Architecture
 
-```typescript
-// src/services/my-feature/create-my-router.ts
-import { Router, Request, Response } from 'express';
+See [`.cursor/architecture/README.md`](.cursor/architecture/README.md) — start with [011 – `/api/data` REST](.cursor/architecture/011-personal-finances-api-data.md).
 
-export const createMyRouter = (): Router => {
-  const router = Router();
-  
-  router.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'My feature works!' });
-  });
-  
-  return router;
-};
-```
+## Database
 
-2. Export it in `src/services/my-feature/index.ts`:
+Supabase setup and SQL run order: [`docs/database-setup.md`](docs/database-setup.md).
 
-```typescript
-export { createMyRouter } from './create-my-router';
-```
+## Local development and trust
 
-3. Mount it in `index.ts`:
+**No authentication** in the OSS default. The API uses permissive CORS (`cors()`). **Do not** expose on a LAN or the internet without adding auth, HTTPS, explicit CORS, and rate limits. Bind to `127.0.0.1` or firewall port **3011** during local development if unsure.
 
-```typescript
-import { createMyRouter } from './src/services/my-feature';
-app.use('/api/my-feature', createMyRouter());
-```
+Statement CSV uploads are limited to **5 MB** and CSV mime types only.
 
-## Deployment
+## Security
 
-### Build for Production
+Report issues per [`SECURITY.md`](SECURITY.md). License: MIT — see [`LICENSE`](LICENSE). Release status: [`docs/oss-release-status.md`](docs/oss-release-status.md).
+
+## Verification
+
 ```bash
 npm run build
+curl http://localhost:3011/api/health
 ```
 
-### Run Production Build
-```bash
-NODE_ENV=production node dist/index.js
-```
-
-## Architecture Principles
-
-This template follows these conventions:
-- **One function per file** - Each file contains a single, focused function
-- **Factory pattern** - Routers are created via factory functions
-- **Index exports** - Every folder has an `index.ts` for clean imports
-- **Type safety** - Explicit types for all functions and routes
-- **Middleware separation** - Early middleware vs error handling
-
-## License
-
-MIT
-
-## Author
-
-TroutHouseTech
+Smoke with OSS web: load dashboard, list transactions, create a category, import a statement (when configured).

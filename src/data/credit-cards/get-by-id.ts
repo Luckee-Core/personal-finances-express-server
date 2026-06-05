@@ -1,6 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { CreditCard } from './types';
 
+/**
+ * Fetches a credit card by id.
+ */
 export const getCreditCardById = async (
   supabase: SupabaseClient,
   id: string,

@@ -1,11 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Category, UpdateCategoryInput } from './types';
 
+/**
+ * Updates a category row.
+ */
 export const updateCategory = async (
   supabase: SupabaseClient,
   id: string,
   input: UpdateCategoryInput,
 ): Promise<Category> => {
+  console.log('💾 updateCategory', { id });
   const patch: Record<string, string | null> = { updated_at: new Date().toISOString() };
   if (input.name !== undefined) {
     const name = input.name.trim();

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { markRecurringPurchaseNotRecurring } from '../mark-not-recurring';
+import { processMarkNotRecurring } from '../../../services/recurring-purchases/process-mark-not-recurring';
 import {
   parseRouteId,
   requireSupabase,
@@ -26,7 +26,7 @@ export const postMarkNotRecurringHandler = async (
   }
 
   try {
-    const result = await markRecurringPurchaseNotRecurring(supabase, id);
+    const result = await processMarkNotRecurring(supabase, id);
     console.log('📤 POST /api/data/recurring-purchases/:id/mark-not-recurring');
     sendSuccess(res, result);
   } catch (error) {

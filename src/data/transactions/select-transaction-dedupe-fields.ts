@@ -10,6 +10,9 @@ export type TransactionDedupeScope =
   | { bankAccountId: string; creditCardId?: never }
   | { creditCardId: string; bankAccountId?: never };
 
+/**
+ * Loads dedupe fields for transactions in a bank account or credit card scope.
+ */
 export const selectTransactionDedupeFields = async (
   supabase: SupabaseClient,
   scope: TransactionDedupeScope,

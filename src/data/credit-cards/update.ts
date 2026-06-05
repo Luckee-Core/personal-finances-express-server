@@ -1,6 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { CreditCard, UpdateCreditCardInput } from './types';
 
+/**
+ * Updates a credit card row.
+ */
 export const updateCreditCard = async (
   supabase: SupabaseClient,
   id: string,

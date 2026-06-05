@@ -1,10 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Category, CreateCategoryInput } from './types';
 
+/**
+ * Inserts a category row.
+ */
 export const createCategory = async (
   supabase: SupabaseClient,
   input: CreateCategoryInput,
 ): Promise<Category> => {
+  console.log('💾 createCategory', { name: input.name });
   const name = input.name?.trim() ?? '';
   if (!name) {
     throw new Error('name is required');

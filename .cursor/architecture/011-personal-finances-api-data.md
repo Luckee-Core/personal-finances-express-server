@@ -29,6 +29,13 @@ Accepted
 
 REST style: `GET /`, `POST /`, `PATCH /:id`, `DELETE /:id` (not action paths like `/company/list`).
 
+**Documented action-route exceptions** (orchestration subroutes on entity routers):
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/data/ai-prompts/:id/activate` | Set one prompt active for its type |
+| `POST` | `/api/data/recurring-purchases/:id/mark-not-recurring` | Delete purchase and record slug in `not_recurring` |
+
 ### 2) Thin CRUD entity module
 Each catalog entity under `src/data/{entity}/`:
 

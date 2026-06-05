@@ -1,10 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { RecurringPurchase } from './types';
 
+/**
+ * Fetches a recurring purchase by id.
+ */
 export const getRecurringPurchaseById = async (
   supabase: SupabaseClient,
   id: string,
 ): Promise<RecurringPurchase | null> => {
+  console.log('💾 getRecurringPurchaseById', id);
   const { data, error } = await supabase
     .from('recurring_purchases')
     .select('*')

@@ -1,6 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { StatementImport } from './types';
 
+/**
+ * Fetches a statement import by id.
+ */
 export const getStatementImportById = async (
   supabase: SupabaseClient,
   id: string,

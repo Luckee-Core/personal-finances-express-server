@@ -258,7 +258,7 @@ export const processDetectRecurringForSlug = async (
   } catch (error) {
     if (isSupabaseMissingTableError(error, 'recurring_detect_ai')) {
       console.warn(
-        '[recurring-detect] audit tables missing (run docs/supabase/008_recurring_detect_ai_audit.sql); detecting without audit',
+        '📊 processDetectRecurringForSlug audit tables missing (run docs/supabase/008_recurring_detect_ai_audit.sql); detecting without audit',
       );
       return await runModelAndApply(supabase, slug, transactions, options, null);
     }

@@ -60,9 +60,11 @@ export const processDetectRecurringBatch = async (
   const batch = groups.slice(0, limit);
   const remaining = Math.max(0, totalMatching - batch.length);
 
-  console.log(
-    `[recurring-detect batch] start total=${totalMatching} this_batch=${batch.length} remaining_after=${remaining}`,
-  );
+  console.log('🚀 processDetectRecurringBatch', {
+    total: totalMatching,
+    this_batch: batch.length,
+    remaining_after: remaining,
+  });
 
   const results: DetectRecurringForSlugResult[] = [];
   const errors: { slug: string; error: string }[] = [];
@@ -73,9 +75,11 @@ export const processDetectRecurringBatch = async (
 
   for (let i = 0; i < batch.length; i += 1) {
     const group = batch[i];
-    console.log(
-      `[recurring-detect batch] ${i + 1}/${batch.length} slug=${group.slug} txns=${group.transactions.length}`,
-    );
+    console.log('📊 processDetectRecurringBatch', {
+      progress: `${i + 1}/${batch.length}`,
+      slug: group.slug,
+      txns: group.transactions.length,
+    });
     try {
       const result = await processDetectRecurringForSlug(
         supabase,
@@ -93,20 +97,29 @@ export const processDetectRecurringBatch = async (
         succeeded += 1;
         if (result.is_recurring) recurringFound += 1;
       }
-      console.log(
-        `[recurring-detect batch] ${i + 1}/${batch.length} ok is_recurring=${result.is_recurring} skipped=${result.skipped}`,
-      );
+      console.log('📊 processDetectRecurringBatch', {
+        progress: `${i + 1}/${batch.length}`,
+        is_recurring: result.is_recurring,
+        skipped: result.skipped,
+      });
     } catch (error) {
       failed += 1;
       const message = error instanceof Error ? error.message : 'Unknown error';
       errors.push({ slug: group.slug, error: message });
-      console.error(`[recurring-detect batch] ${i + 1}/${batch.length} failed:`, message);
+      console.error('❌ processDetectRecurringBatch', {
+        progress: `${i + 1}/${batch.length}`,
+        slug: group.slug,
+        message,
+      });
     }
   }
 
-  console.log(
-    `[recurring-detect batch] done processed=${batch.length} recurring_found=${recurringFound} failed=${failed} remaining=${remaining}`,
-  );
+  console.log('✅ processDetectRecurringBatch', {
+    processed: batch.length,
+    recurring_found: recurringFound,
+    failed,
+    remaining,
+  });
 
   return {
     processed: batch.length,

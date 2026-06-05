@@ -3,10 +3,14 @@ import type { CreateTransactionInput, Transaction, TransactionSource } from './t
 
 const ALLOWED_SOURCES = new Set<TransactionSource>(['manual', 'import']);
 
+/**
+ * Inserts a transaction row.
+ */
 export const createTransaction = async (
   supabase: SupabaseClient,
   input: CreateTransactionInput,
 ): Promise<Transaction> => {
+  console.log('💾 createTransaction', { posted_on: input.posted_on, source: input.source ?? 'manual' });
   const bankAccountId = input.bank_account_id?.trim() || null;
   const creditCardId = input.credit_card_id?.trim() || null;
   if (Boolean(bankAccountId) === Boolean(creditCardId)) {

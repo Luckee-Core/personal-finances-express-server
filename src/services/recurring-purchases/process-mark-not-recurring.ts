@@ -1,9 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { upsertNotRecurringBySlug } from '../not-recurring';
-import type { NotRecurring } from '../not-recurring/types';
-import { deleteRecurringPurchase } from './delete';
-import { getRecurringPurchaseById } from './get-by-id';
-import { getAllTransactions } from '../transactions';
+import { upsertNotRecurringBySlug } from '../../data/not-recurring';
+import type { NotRecurring } from '../../data/not-recurring/types';
+import { deleteRecurringPurchase } from '../../data/recurring-purchases/delete';
+import { getRecurringPurchaseById } from '../../data/recurring-purchases/get-by-id';
+import { getAllTransactions } from '../../data/transactions';
 
 export type MarkNotRecurringResult = {
   not_recurring: NotRecurring;
@@ -13,10 +13,12 @@ export type MarkNotRecurringResult = {
 /**
  * Deletes a recurring purchase and records its slug as not recurring for AI detection.
  */
-export const markRecurringPurchaseNotRecurring = async (
+export const processMarkNotRecurring = async (
   supabase: SupabaseClient,
   recurringPurchaseId: string,
 ): Promise<MarkNotRecurringResult> => {
+  console.log('🚀 processMarkNotRecurring', recurringPurchaseId);
+
   const purchase = await getRecurringPurchaseById(supabase, recurringPurchaseId);
   if (!purchase) {
     throw new Error('Recurring purchase not found');
@@ -48,5 +50,6 @@ export const markRecurringPurchaseNotRecurring = async (
 
   await deleteRecurringPurchase(supabase, recurringPurchaseId);
 
+  console.log('✅ processMarkNotRecurring', slug);
   return { not_recurring: notRecurring, slug };
 };

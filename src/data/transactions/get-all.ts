@@ -1,10 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Transaction, TransactionListFilters } from './types';
 
+/**
+ * Lists transactions with optional filters.
+ */
 export const getAllTransactions = async (
   supabase: SupabaseClient,
   filters: TransactionListFilters = {},
 ): Promise<Transaction[]> => {
+  console.log('💾 getAllTransactions', filters);
   let query = supabase.from('transactions').select('*').order('posted_on', { ascending: false });
 
   if (filters.bankAccountId) {

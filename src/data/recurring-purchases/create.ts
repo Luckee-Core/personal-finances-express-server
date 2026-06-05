@@ -6,10 +6,14 @@ import {
 } from '../../utils/recurring/normalize-billing-interval';
 import type { CreateRecurringPurchaseInput, RecurringPurchase } from './types';
 
+/**
+ * Inserts a recurring purchase row.
+ */
 export const createRecurringPurchase = async (
   supabase: SupabaseClient,
   input: CreateRecurringPurchaseInput,
 ): Promise<RecurringPurchase> => {
+  console.log('💾 createRecurringPurchase', { name: input.name, vendor: input.vendor });
   const name = input.name?.trim() ?? '';
   if (!name) {
     throw new Error('name is required');

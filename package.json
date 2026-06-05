@@ -1,7 +1,7 @@
 {
-  "name": "express-server-template",
-  "version": "1.0.0",
-  "description": "Express API Server Template - Ready-to-use Express server with TypeScript",
+  "name": "personal-finances-express-server",
+  "version": "0.1.0",
+  "description": "Express API for Personal Finances — Supabase CRUD and AI workers",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts",

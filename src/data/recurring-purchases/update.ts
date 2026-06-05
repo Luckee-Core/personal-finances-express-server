@@ -13,11 +13,15 @@ const ALLOWED_INTERVALS = new Set<BillingInterval>([
   'custom',
 ]);
 
+/**
+ * Updates a recurring purchase row.
+ */
 export const updateRecurringPurchase = async (
   supabase: SupabaseClient,
   id: string,
   input: UpdateRecurringPurchaseInput,
 ): Promise<RecurringPurchase> => {
+  console.log('💾 updateRecurringPurchase', { id });
   const patch: Record<string, string | number | boolean | null> = {
     updated_at: new Date().toISOString(),
   };

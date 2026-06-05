@@ -152,9 +152,12 @@ const applyRecurringCharges = async (
         } catch (createError) {
           const message =
             createError instanceof Error ? createError.message : 'Unknown create error';
-          console.warn(
-            `[recurring-detect all] create skipped slug=${charge.slug} interval=${charge.billing_interval}: ${message}`,
-          );
+          console.warn('📊 processDetectRecurringAll', {
+            step: 'create skipped',
+            slug: charge.slug,
+            interval: charge.billing_interval,
+            message,
+          });
         }
       }
 
@@ -205,7 +208,7 @@ export const processDetectRecurringAll = async (
       throw notRecurringError;
     }
     console.warn(
-      '[recurring-detect all] not_recurring table missing; run docs/supabase/015_not_recurring.sql',
+      '📊 processDetectRecurringAll not_recurring table missing; run docs/supabase/015_not_recurring.sql',
     );
   }
 
@@ -240,7 +243,7 @@ export const processDetectRecurringAll = async (
   const modelConfig = getModelConfig(AI_PROMPT_TYPE_RECURRING_DETECT);
   const requestPayload = JSON.parse(userMessage) as Record<string, unknown>;
 
-  console.log('[recurring-detect all] start', {
+  console.log('🚀 processDetectRecurringAll', {
     transactions: slugged.length,
     not_recurring_slugs: excludedSlugs.size,
     slug_groups: bySlug.size,
@@ -269,7 +272,8 @@ export const processDetectRecurringAll = async (
     } catch (parseError) {
       const message =
         parseError instanceof Error ? parseError.message : 'Invalid JSON in model response';
-      console.error('[recurring-detect all] parse failed', {
+      console.error('❌ processDetectRecurringAll', {
+        step: 'parse failed',
         message,
         raw_preview: rawResponse.slice(0, 400),
         raw_tail: rawResponse.slice(-200),
@@ -309,7 +313,8 @@ export const processDetectRecurringAll = async (
 
     const { rawResponse, usage, charges } = await runModel();
 
-    console.log('[recurring-detect all] model done', {
+    console.log('🤖 processDetectRecurringAll', {
+      step: 'model done',
       recurring_charges: charges.length,
       input_tokens: usage.input_tokens,
       output_tokens: usage.output_tokens,
@@ -353,7 +358,7 @@ export const processDetectRecurringAll = async (
       input,
     );
 
-    console.log('[recurring-detect all] done', {
+    console.log('✅ processDetectRecurringAll', {
       recurring_found: results.length,
       purchases_created: purchasesCreated,
     });
@@ -367,9 +372,7 @@ export const processDetectRecurringAll = async (
     };
   } catch (error) {
     if (isSupabaseMissingTableError(error, 'recurring_detect_ai')) {
-      console.warn(
-        '[recurring-detect all] audit tables missing; detecting without audit',
-      );
+      console.warn('📊 processDetectRecurringAll audit tables missing; detecting without audit');
       const { charges } = await runModel();
       const filteredCharges = charges.filter((c) => !excludedSlugs.has(c.slug));
       const { results, purchasesCreated } = await applyRecurringCharges(

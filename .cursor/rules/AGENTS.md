@@ -35,7 +35,7 @@ BEFORE implementing ANY feature, you MUST:
 ## Quick Reference
 
 - Architecture entrypoint → `.cursor/architecture/README.md`
-- **Primary API layout** → `.cursor/architecture/011-personal-finances-api-data.md`
+- **Primary API layout** → `.cursor/architecture/011-personal-finances-api-data.md` (ADR 009 is superseded — use ADR 011 only)
 - File & domain organization → `.cursor/architecture/001-file-and-domain-organization.md`
 - Router factory & handler pattern → `.cursor/architecture/002-router-factory-and-handler-pattern.md`
 - Data layer CRUD → `.cursor/architecture/003-data-layer-crud-boundaries.md`

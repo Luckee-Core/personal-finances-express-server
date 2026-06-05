@@ -8,6 +8,9 @@ export type CreateImportRecordInput = {
   credit_card_id?: string | null;
 };
 
+/**
+ * Inserts a statement import row.
+ */
 export const createImportRecord = async (
   supabase: SupabaseClient,
   input: CreateImportRecordInput,

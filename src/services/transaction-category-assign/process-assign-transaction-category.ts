@@ -44,9 +44,6 @@ export type ProcessAssignCategoryOptions = {
   systemPromptOverride?: string;
 };
 
-const logTag = (force?: boolean): string =>
-  force ? '[category-assign recategorize]' : '[category-assign]';
-
 const truncate = (value: string, max = 120): string =>
   value.length <= max ? value : `${value.slice(0, max)}…`;
 
@@ -115,19 +112,24 @@ export const processAssignTransactionCategory = async (
   transactionId: string,
   options: ProcessAssignCategoryOptions = {},
 ): Promise<AssignCategoryResult> => {
-  const tag = logTag(options.force);
-  console.log(`${tag} start transaction_id=${transactionId} force=${Boolean(options.force)}`, {
+  console.log('🚀 processAssignTransactionCategory', {
+    transaction_id: transactionId,
+    force: Boolean(options.force),
     has_system_prompt_override: Boolean(options.systemPromptOverride?.trim()),
     override_chars: options.systemPromptOverride?.length ?? 0,
   });
 
   const transaction = await getTransactionById(supabase, transactionId);
   if (!transaction) {
-    console.error(`${tag} transaction not found id=${transactionId}`);
+    console.error('❌ processAssignTransactionCategory', {
+      transaction_id: transactionId,
+      message: 'transaction not found',
+    });
     throw new Error('Transaction not found');
   }
 
-  console.log(`${tag} loaded transaction`, {
+  console.log('📊 processAssignTransactionCategory', {
+    step: 'loaded transaction',
     posted_on: transaction.posted_on,
     amount_cents: transaction.amount_cents,
     description: truncate(transaction.description),
@@ -139,7 +141,9 @@ export const processAssignTransactionCategory = async (
     const existingCategories =
       options.existingCategoriesOverride ?? (await getAllCategories(supabase));
     const current = existingCategories.find((c) => c.id === transaction.category_id);
-    console.log(`${tag} skipped (already categorized, force=false)`, {
+    console.log('✅ processAssignTransactionCategory', {
+      step: 'skipped',
+      reason: 'already categorized, force=false',
       category_name: current?.name ?? 'Unknown',
     });
     return {
@@ -176,7 +180,8 @@ export const processAssignTransactionCategory = async (
   let userMessage = buildUserMessage();
   let requestPayload = JSON.parse(userMessage) as Record<string, unknown>;
 
-  console.log(`${tag} calling model`, {
+  console.log('🤖 processAssignTransactionCategory', {
+    step: 'calling model',
     bank_account_name: accountName,
     previous_category_name: previousCategory?.name ?? null,
     assignment_mode: options.force ? 'recategorize' : 'assign',
@@ -214,7 +219,9 @@ export const processAssignTransactionCategory = async (
     const client = createManagedAnthropicClient();
 
     const callModel = async (message: string, attempt: number) => {
-      console.log(`${tag} model attempt ${attempt}`, {
+      console.log('🤖 processAssignTransactionCategory', {
+        step: 'model attempt',
+        attempt,
         user_message_chars: message.length,
         user_message_preview: truncate(message, 400),
       });
@@ -225,7 +232,9 @@ export const processAssignTransactionCategory = async (
         temperature: modelConfig.temperature,
         maxTokens: modelConfig.maxTokens,
       });
-      console.log(`${tag} model response attempt ${attempt}`, {
+      console.log('🤖 processAssignTransactionCategory', {
+        step: 'model response',
+        attempt,
         input_tokens: usage.input_tokens,
         output_tokens: usage.output_tokens,
         raw_preview: truncate(rawResponse, 300),
@@ -237,7 +246,8 @@ export const processAssignTransactionCategory = async (
 
     const { rawResponse, usage, parsed, resolved } = await callModel(userMessage, 1);
 
-    console.log(`${tag} parsed assignment`, {
+    console.log('📊 processAssignTransactionCategory', {
+      step: 'parsed assignment',
       matched_existing: parsed.matched_existing,
       category_id: resolved.categoryId,
       category_name: resolved.categoryName,
@@ -284,7 +294,7 @@ export const processAssignTransactionCategory = async (
       last_category_assign_exchange_id: exchangeRow.id,
     });
 
-    console.log(`${tag} done`, {
+    console.log('✅ processAssignTransactionCategory', {
       transaction_id: updatedTransaction.id,
       category_id: updatedTransaction.category_id,
       category_name: resolved.categoryName,
@@ -308,7 +318,11 @@ export const processAssignTransactionCategory = async (
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error(`${tag} failed`, { transaction_id: transactionId, message, error });
+    console.error('❌ processAssignTransactionCategory', {
+      transaction_id: transactionId,
+      message,
+      error,
+    });
     const responseRow = await createTransactionCategoryAssignAiResponse(supabase, {
       request_id: requestRow.id,
       model: modelConfig.model,

@@ -75,12 +75,14 @@ export const processAssignTransactionCategoriesBatch = async (
   const batch = transactions.slice(0, limit);
   const remaining = Math.max(0, totalMatching - batch.length);
 
-  console.log(
-    `[category-assign batch] start total=${totalMatching} this_batch=${batch.length} remaining_after=${remaining}`,
-  );
+  console.log('🚀 processAssignTransactionCategoriesBatch', {
+    total: totalMatching,
+    this_batch: batch.length,
+    remaining_after: remaining,
+  });
 
   if (batch.length === 0) {
-    console.log('[category-assign batch] done (nothing to process)');
+    console.log('✅ processAssignTransactionCategoriesBatch', 'nothing to process');
     return {
       processed: 0,
       succeeded: 0,
@@ -104,9 +106,11 @@ export const processAssignTransactionCategoriesBatch = async (
 
   for (let i = 0; i < batch.length; i += 1) {
     const txn = batch[i];
-    console.log(
-      `[category-assign batch] ${i + 1}/${batch.length} transaction=${txn.id} posted_on=${txn.posted_on}`,
-    );
+    console.log('📊 processAssignTransactionCategoriesBatch', {
+      progress: `${i + 1}/${batch.length}`,
+      transaction_id: txn.id,
+      posted_on: txn.posted_on,
+    });
     try {
       const result = await processAssignTransactionCategory(supabase, txn.id, {
         force: input.force,
@@ -123,20 +127,30 @@ export const processAssignTransactionCategoriesBatch = async (
           categories = await getAllCategories(supabase);
         }
       }
-      console.log(
-        `[category-assign batch] ${i + 1}/${batch.length} ok category=${result.category_name} skipped=${result.skipped}`,
-      );
+      console.log('📊 processAssignTransactionCategoriesBatch', {
+        progress: `${i + 1}/${batch.length}`,
+        category: result.category_name,
+        skipped: result.skipped,
+      });
     } catch (error) {
       failed += 1;
       const message = error instanceof Error ? error.message : 'Unknown error';
       errors.push({ transaction_id: txn.id, error: message });
-      console.error(`[category-assign batch] ${i + 1}/${batch.length} failed:`, message);
+      console.error('❌ processAssignTransactionCategoriesBatch', {
+        progress: `${i + 1}/${batch.length}`,
+        transaction_id: txn.id,
+        message,
+      });
     }
   }
 
-  console.log(
-    `[category-assign batch] done processed=${batch.length} succeeded=${succeeded} failed=${failed} categories_created=${categoriesCreated} remaining=${remaining}`,
-  );
+  console.log('✅ processAssignTransactionCategoriesBatch', {
+    processed: batch.length,
+    succeeded,
+    failed,
+    categories_created: categoriesCreated,
+    remaining,
+  });
 
   return {
     processed: batch.length,

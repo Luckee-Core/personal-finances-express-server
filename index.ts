@@ -28,6 +28,9 @@ app.use('/api/data', createPersonalFinancesDataService());
 import { createAiRouter } from './src/services/ai-router';
 app.use('/api/ai', createAiRouter());
 
+import { createApiDocsRouter } from './src/services/api-docs';
+app.use(createApiDocsRouter());
+
 import { setupErrorHandling } from './src/services/middleware';
 setupErrorHandling(app);
 

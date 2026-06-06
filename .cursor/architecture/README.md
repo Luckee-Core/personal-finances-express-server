@@ -22,6 +22,7 @@ ADRs document:
 | [009](./009-crm-file-vault-api-data.md) | **Superseded** — CRM template; use **011** instead |
 | [010](./010-error-log-persistence.md) | **Deferred** — error log tables not implemented yet |
 | [011](./011-personal-finances-api-data.md) | **Primary** — `/api/data` REST + Supabase |
+| [012](./012-api-docs-catalog.md) | API docs catalog — `GET /api-docs.json` |
 
 ## How to use
 

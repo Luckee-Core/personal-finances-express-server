@@ -50,12 +50,23 @@ NEXT_PUBLIC_SERVER_URL=http://localhost:3011
 | `/api/data/*-ai-requests` | AI audit requests |
 | `/api/data/*-ai-responses` | AI audit responses |
 | `/api/ai/*` | AI workers (slug assign, category assign, recurring detect) |
+| `GET /api-docs.json` | Machine-readable API documentation catalog |
 
 Full aggregator: `src/data/personal-finances-data-service.ts`.
 
+## API documentation
+
+- **JSON catalog:** `GET /api-docs.json` — `{ success, data: ApiDocsCatalog }`
+- **Human UI:** browse in the web app at [`/docs`](http://localhost:3000/docs) (requires Express + web running)
+- **Maintenance:** update `src/services/api-docs/api-docs-catalog.ts` when routes change — see [012 – API docs catalog](.cursor/architecture/012-api-docs-catalog.md)
+
+```bash
+curl http://localhost:3011/api-docs.json
+```
+
 ## Architecture
 
-See [`.cursor/architecture/README.md`](.cursor/architecture/README.md) — start with [011 – `/api/data` REST](.cursor/architecture/011-personal-finances-api-data.md).
+See [`.cursor/architecture/README.md`](.cursor/architecture/README.md) — start with [011 – `/api/data` REST](.cursor/architecture/011-personal-finances-api-data.md) and [012 – API docs catalog](.cursor/architecture/012-api-docs-catalog.md).
 
 ## Database
 
